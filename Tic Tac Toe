@@ -1,0 +1,156 @@
+import java.util.*;
+
+public class TicTacToeAI {
+    static char[][] board = {
+        {' ', ' ', ' '},
+        {' ', ' ', ' '},
+        {' ', ' ', ' '}
+    };
+    static char player = 'X';  // Human
+    static char ai = 'O';      // Computer
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Welcome to Tic Tac Toe (You = X, AI = O)");
+        printBoard();
+
+        while (true) {
+            // Human move
+            System.out.print("Enter your move (row and col 0-2): ");
+            int row = sc.nextInt();
+            int col = sc.nextInt();
+
+            if (row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ') {
+                board[row][col] = player;
+            } else {
+                System.out.println("Invalid move, try again.");
+                continue;
+            }
+
+            printBoard();
+
+            if (checkWin(player)) {
+                System.out.println("🎉 You win!");
+                break;
+            }
+            if (isFull()) {
+                System.out.println("It's a draw!");
+                break;
+            }
+
+            // AI move
+            System.out.println("AI is making a move...");
+            Move bestMove = findBestMove();
+            board[bestMove.row][bestMove.col] = ai;
+
+            printBoard();
+
+            if (checkWin(ai)) {
+                System.out.println("💻 AI wins!");
+                break;
+            }
+            if (isFull()) {
+                System.out.println("It's a draw!");
+                break;
+            }
+        }
+        sc.close();
+    }
+
+    // Print the board
+    static void printBoard() {
+        System.out.println("-------------");
+        for (int i = 0; i < 3; i++) {
+            System.out.print("| ");
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j] + " | ");
+            }
+            System.out.println();
+            System.out.println("-------------");
+        }
+    }
+
+    // Check winner
+    static boolean checkWin(char c) {
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] == c && board[i][1] == c && board[i][2] == c) return true;
+            if (board[0][i] == c && board[1][i] == c && board[2][i] == c) return true;
+        }
+        if (board[0][0] == c && board[1][1] == c && board[2][2] == c) return true;
+        if (board[0][2] == c && board[1][1] == c && board[2][0] == c) return true;
+        return false;
+    }
+
+    // Check if board is full
+    static boolean isFull() {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (board[i][j] == ' ')
+                    return false;
+        return true;
+    }
+
+    // Minimax AI logic
+    static int minimax(char[][] b, int depth, boolean isMax) {
+        if (checkWin(ai)) return 10 - depth;
+        if (checkWin(player)) return depth - 10;
+        if (isFull()) return 0;
+
+        if (isMax) {
+            int best = -1000;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (b[i][j] == ' ') {
+                        b[i][j] = ai;
+                        best = Math.max(best, minimax(b, depth + 1, false));
+                        b[i][j] = ' ';
+                    }
+                }
+            }
+            return best;
+        } else {
+            int best = 1000;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (b[i][j] == ' ') {
+                        b[i][j] = player;
+                        best = Math.min(best, minimax(b, depth + 1, true));
+                        b[i][j] = ' ';
+                    }
+                }
+            }
+            return best;
+        }
+    }
+
+    // Find best move for AI
+    static Move findBestMove() {
+        int bestVal = -1000;
+        Move bestMove = new Move(-1, -1);
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == ' ') {
+                    board[i][j] = ai;
+                    int moveVal = minimax(board, 0, false);
+                    board[i][j] = ' ';
+                    if (moveVal > bestVal) {
+                        bestMove.row = i;
+                        bestMove.col = j;
+                        bestVal = moveVal;
+                    }
+                }
+            }
+        }
+        return bestMove;
+    }
+}
+
+// Helper class for moves
+class Move {
+    int row, col;
+    Move(int r, int c) {
+        row = r;
+        col = c;
+    }
+}
