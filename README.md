@@ -66,38 +66,6 @@ The objective of this project is to implement a Tic Tac Toe game in Java that ca
 
 
 
----
-
-🔹 Sample Console Output
-
-Welcome to Tic Tac Toe (You = X, AI = O)
--------------
-|   |   |   | 
--------------
-|   |   |   | 
--------------
-|   |   |   | 
--------------
-Enter your move (row and col 0-2): 0 0
--------------
-| X |   |   | 
--------------
-|   |   |   | 
--------------
-|   |   |   | 
--------------
-AI is making a move...
--------------
-| X |   | O | 
--------------
-|   |   |   | 
--------------
-|   |   |   | 
--------------
-
-
----
-
 🔹 Conclusion
 
 This project demonstrates how Java console applications can implement classic games like Tic Tac Toe. The inclusion of the Minimax AI search method ensures the computer always plays optimally, making it unbeatable.
